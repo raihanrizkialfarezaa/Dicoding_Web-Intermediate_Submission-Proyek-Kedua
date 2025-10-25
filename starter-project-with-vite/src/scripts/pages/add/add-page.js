@@ -151,7 +151,14 @@ class StoryCreatePage {
       this.#map.removeLayer(this.#marker);
     }
 
-    this.#marker = L.marker([lat, lng]).addTo(this.#map);
+    const icon = L.divIcon({
+      className: 'custom-marker',
+      html: '<div class="marker-pin"></div>',
+      iconSize: [30, 42],
+      iconAnchor: [15, 42],
+    });
+
+    this.#marker = L.marker([lat, lng], { icon }).addTo(this.#map);
     this.#selectedLat = lat;
     this.#selectedLng = lng;
 

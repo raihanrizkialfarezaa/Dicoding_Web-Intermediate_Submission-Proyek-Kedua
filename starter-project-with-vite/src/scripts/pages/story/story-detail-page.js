@@ -109,7 +109,7 @@ export default class StoryDetailPage {
     const streetLayer = L.tileLayer(CONFIG.MAP_TILE_LAYERS.street.url, { attribution: CONFIG.MAP_TILE_LAYERS.street.attribution });
     streetLayer.addTo(map);
 
-    L.marker([story.lat, story.lon]).addTo(map).bindPopup(`
+    L.marker([story.lat, story.lon], { icon: new L.Icon.Default() }).addTo(map).bindPopup(`
       <strong>${story.name}</strong><br />
       <span>${story.description}</span>
     `);
