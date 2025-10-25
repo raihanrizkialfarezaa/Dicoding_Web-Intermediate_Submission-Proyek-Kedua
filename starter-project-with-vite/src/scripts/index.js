@@ -1,8 +1,17 @@
 import '../styles/styles.css';
 import 'leaflet/dist/leaflet.css';
 import * as L from 'leaflet';
+import iconUrl from 'leaflet/dist/images/marker-icon.png';
+import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
+import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
 window.L = L;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl,
+  iconUrl,
+  shadowUrl,
+});
 
 import App from './pages/app';
 import { initPushSubscriptionToggle } from './utils/push-manager';
