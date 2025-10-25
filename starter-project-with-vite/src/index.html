@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Aplikasi berbagi cerita seputar Dicoding" />
+    <link rel="shortcut icon" href="/favicon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#0ea5a4" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <title>Dicoding Stories - Berbagi Cerita</title>
+    <script type="module" src="/scripts/index.js"></script>
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Lewati ke konten utama</a>
+
+    <header>
+      <div class="main-header container">
+        <a class="brand-name" href="#/" aria-label="Dicoding Stories Beranda"> Dicoding Stories </a>
+
+        <div class="header-actions">
+          <div id="auth-status" class="auth-status"></div>
+
+          <button id="push-toggle" class="push-toggle" type="button" aria-pressed="false">Aktifkan Notifikasi</button>
+
+          <nav id="navigation-drawer" class="navigation-drawer" aria-label="Navigasi utama">
+            <!-- Khusus untuk navbar di hamburger menu responsive mobile view side bar -->
+            <div class="drawer-auth">
+              <div class="drawer-auth-controls">
+                <div id="auth-status-drawer" class="auth-status-drawer">
+                  <a href="#/login" class="auth-btn-header">Masuk</a>
+                  <a href="#/register" class="auth-btn-header">Daftar</a>
+                </div>
+                <button id="push-toggle-drawer" class="push-toggle drawer-push-toggle" type="button" aria-pressed="false">Aktifkan Notifikasi</button>
+              </div>
+            </div>
+            <ul id="nav-list" class="nav-list">
+              <li><a href="#/">Beranda</a></li>
+              <li><a href="#/add">Tambah Cerita</a></li>
+              <li><a href="#/about">Tentang</a></li>
+            </ul>
+          </nav>
+
+          <button id="drawer-button" class="drawer-button" aria-label="Toggle menu navigasi">☰</button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main-content" class="main-content" tabindex="-1"></main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>&copy; 2025 Dicoding Stories. Berbagi cerita, berbagi inspirasi.</p>
+      </div>
+    </footer>
+  </body>
+</html>

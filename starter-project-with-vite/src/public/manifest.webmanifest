@@ -1,0 +1,56 @@
+{
+  "name": "Dicoding Stories",
+  "short_name": "Stories",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0d10",
+  "theme_color": "#0ea5a4",
+  "description": "Aplikasi berbagi cerita komunitas Dicoding dengan dukungan offline dan notifikasi push.",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/home.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "Beranda Dicoding Stories"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Cerita Terbaru",
+      "short_name": "Terbaru",
+      "description": "Buka daftar cerita terbaru",
+      "url": "/#/"
+    },
+    {
+      "name": "Tambah Cerita",
+      "short_name": "Tambah",
+      "description": "Bagikan cerita baru",
+      "url": "/#/add"
+    },
+    {
+      "name": "Draft Offline",
+      "short_name": "Draft",
+      "description": "Kelola cerita offline Anda",
+      "url": "/#/add"
+    }
+  ],
+  "categories": ["social", "productivity"],
+  "lang": "id-ID",
+  "prefer_related_applications": false
+}
