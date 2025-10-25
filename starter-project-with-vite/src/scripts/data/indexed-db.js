@@ -1,6 +1,7 @@
 const DB_NAME = 'dicodingStoriesStorage';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 const STORY_STORE = 'stories';
+const SAVED_STORE = 'savedStories';
 const PENDING_STORE = 'pendingStories';
 const SETTINGS_STORE = 'settings';
 
@@ -19,6 +20,10 @@ function openDatabase() {
 
       if (!database.objectStoreNames.contains(STORY_STORE)) {
         database.createObjectStore(STORY_STORE, { keyPath: 'id' });
+      }
+
+      if (!database.objectStoreNames.contains(SAVED_STORE)) {
+        database.createObjectStore(SAVED_STORE, { keyPath: 'id' });
       }
 
       if (!database.objectStoreNames.contains(PENDING_STORE)) {
@@ -168,6 +173,49 @@ export async function readSettingValue(name) {
   });
 }
 
+export async function saveStory(story) {
+  if (!story || !story.id) return false;
+  return withStore(SAVED_STORE, 'readwrite', (store) => {
+    return new Promise((resolve, reject) => {
+      const request = store.put(story);
+      request.onsuccess = () => resolve(true);
+      request.onerror = () => reject(request.error);
+    });
+  });
+}
+
+export async function getSavedStories() {
+  return withStore(SAVED_STORE, 'readonly', (store) => {
+    return new Promise((resolve, reject) => {
+      const request = store.getAll();
+      request.onsuccess = () => resolve(request.result || []);
+      request.onerror = () => reject(request.error);
+    });
+  });
+}
+
+export async function getSavedStoryById(id) {
+  if (!id) return null;
+  return withStore(SAVED_STORE, 'readonly', (store) => {
+    return new Promise((resolve, reject) => {
+      const request = store.get(id);
+      request.onsuccess = () => resolve(request.result || null);
+      request.onerror = () => reject(request.error);
+    });
+  });
+}
+
+export async function deleteSavedStory(id) {
+  if (!id) return false;
+  return withStore(SAVED_STORE, 'readwrite', (store) => {
+    return new Promise((resolve, reject) => {
+      const request = store.delete(id);
+      request.onsuccess = () => resolve(true);
+      request.onerror = () => reject(request.error);
+    });
+  });
+}
+
 export default {
   cacheStoriesToDb,
   readStoriesFromDb,
@@ -176,4 +224,8 @@ export default {
   deletePendingDraft,
   saveSetting,
   readSettingValue,
+  saveStory,
+  getSavedStories,
+  getSavedStoryById,
+  deleteSavedStory,
 };

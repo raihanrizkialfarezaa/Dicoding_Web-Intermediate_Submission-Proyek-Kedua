@@ -601,6 +601,68 @@ header {
   justify-content: flex-end;
 }
 
+.story-link-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  color: var(--text-light);
+  text-decoration: none;
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-left: 8px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  color: var(--text-light);
+}
+
+.icon-btn:focus,
+.story-link-icon:focus {
+  outline: none;
+  box-shadow: var(--focus-glow);
+  transform: translateY(-1px);
+}
+
+.icon-bookmark {
+  transition: transform 0.14s ease, color 0.14s ease;
+  color: var(--text-light);
+}
+
+.icon-bookmark.saved {
+  color: var(--primary-color);
+  filter: drop-shadow(0 6px 18px rgba(14, 165, 164, 0.18));
+}
+
+.save-toggle[aria-pressed='true'] {
+  background: linear-gradient(180deg, rgba(14, 165, 164, 0.08), rgba(14, 165, 164, 0.06));
+  border-color: rgba(14, 165, 164, 0.12);
+}
+
+@media (max-width: 720px) {
+  .story-actions {
+    justify-content: flex-start;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .story-link-icon,
+  .icon-btn {
+    width: 44px;
+    height: 44px;
+  }
+}
+
 .story-link {
   color: var(--primary-color);
   font-weight: 600;
@@ -2248,7 +2310,7 @@ textarea:focus {
   flex-wrap: wrap;
 }
 
-.story-detail-actions a.btn-primary {
+.story-detail-actions .btn-primary {
   color: #ffffff !important;
   background: linear-gradient(180deg, #0ea5a4, #078b89) !important;
   padding: 12px 22px !important;
@@ -2261,7 +2323,7 @@ textarea:focus {
   text-decoration: none !important;
 }
 
-.story-detail-actions a.btn-primary svg {
+.story-detail-actions .btn-primary svg {
   stroke: rgba(255, 255, 255, 0.95);
 }
 

@@ -1,6 +1,7 @@
 import StoriesService from '../../data/api';
 import CONFIG from '../../config';
 import { showNotification, showFormattedDate } from '../../utils/index';
+import { saveStory, getSavedStoryById, deleteSavedStory } from '../../data/indexed-db';
 import { parseActivePathname } from '../../routes/url-parser';
 
 export default class StoryDetailPage {
@@ -66,12 +67,39 @@ export default class StoryDetailPage {
           </div>
         </div>
         <div id="story-detail-map" class="story-detail-map" role="application" aria-label="Peta lokasi cerita"></div>
-        <div class="story-detail-actions">
-          <a class="btn btn-primary" href="#/">Kembali ke Beranda</a>
-          <a class="btn btn-outline" href="#/add">Bagikan Cerita</a>
-        </div>
+            <div class="story-detail-actions">
+              <a class="btn btn-primary" href="#/">Kembali ke Beranda</a>
+              <a class="btn btn-outline" href="#/add">Bagikan Cerita</a>
+              <button id="save-story-btn" class="btn btn-primary">Simpan Cerita</button>
+            </div>
       </article>
     `;
+
+    const saveBtn = document.getElementById('save-story-btn');
+    if (saveBtn) {
+      getSavedStoryById(story.id).then((existing) => {
+        saveBtn.textContent = existing ? 'Hapus dari Tersimpan' : 'Simpan Cerita';
+        saveBtn.dataset.saved = existing ? 'true' : 'false';
+      });
+
+      saveBtn.addEventListener('click', async () => {
+        try {
+          if (saveBtn.dataset.saved === 'true') {
+            await deleteSavedStory(story.id);
+            saveBtn.textContent = 'Simpan Cerita';
+            saveBtn.dataset.saved = 'false';
+            showNotification('Cerita dihapus dari tersimpan', 'success');
+          } else {
+            await saveStory(story);
+            saveBtn.textContent = 'Hapus dari Tersimpan';
+            saveBtn.dataset.saved = 'true';
+            showNotification('Cerita disimpan', 'success');
+          }
+        } catch (error) {
+          showNotification('Operasi penyimpanan gagal', 'error');
+        }
+      });
+    }
   }
 
   _renderError(message) {
@@ -83,7 +111,7 @@ export default class StoryDetailPage {
     container.innerHTML = `
       <div class="error-state">
         <h2>${message}</h2>
-        <p>Silakan kembali ke beranda dan coba lagi.</p>
+        <p>Silakan kembali ke homepage dan coba lagi.</p>
   <a class="btn btn-primary" href="#/">Kembali</a>
       </div>
     `;

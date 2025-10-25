@@ -2,6 +2,7 @@ import StoriesService from '../../data/api';
 import CONFIG from '../../config';
 import { showNotification } from '../../utils/index';
 import StoriesPresenter from '../../presenters/home-presenter';
+import { saveStory, deleteSavedStory, getSavedStories } from '../../data/indexed-db';
 
 export default class StoriesListPage {
   #map = null;
@@ -102,7 +103,7 @@ export default class StoriesListPage {
     showNotification(message, 'error');
   }
 
-  _renderStoryList(stories, meta = {}) {
+  async _renderStoryList(stories, meta = {}) {
     const listContainer = document.getElementById('stories-list');
 
     if (stories.length === 0) {
@@ -130,6 +131,9 @@ export default class StoriesListPage {
     }
 
     let offlineNotice = '';
+
+    const savedList = await getSavedStories();
+    const savedSet = new Set((savedList || []).map((s) => s.id));
 
     const html =
       authNotice +
@@ -160,7 +164,17 @@ export default class StoriesListPage {
                     <span class="location-coords">${story.lat.toFixed(4)}, ${story.lon.toFixed(4)}</span>
                   </div>
                   <div class="story-actions">
-                    <a class="story-link" href="#/story/${story.id}">Lihat Detail</a>
+                    <a class="story-link-icon" href="#/story/${story.id}" aria-label="Lihat detail ${story.name}">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </a>
+                    <button class="icon-btn save-toggle" data-id="${story.id}" aria-pressed="${savedSet.has(story.id) ? 'true' : 'false'}" title="Simpan cerita">
+                      <svg class="icon-bookmark ${savedSet.has(story.id) ? 'saved' : ''}" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M6 2h12v18l-6-3-6 3V2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -172,7 +186,63 @@ export default class StoriesListPage {
 
     listContainer.innerHTML = html;
     this._setupStoryCardHandlers();
+    this._attachSaveHandlers();
     this._updateMapMarkers(stories);
+  }
+
+  _attachSaveHandlers() {
+    const listContainer = document.getElementById('stories-list');
+    if (!listContainer) return;
+
+    const clickHandler = async (e) => {
+      const btn = e.target.closest('.save-toggle');
+      if (!btn) return;
+      const id = btn.dataset.id;
+      if (!id) return;
+      const story = this.#allStories.find((s) => s.id === id);
+      if (!story) return;
+
+      const svg = btn.querySelector('.icon-bookmark');
+      const isSaved = btn.getAttribute('aria-pressed') === 'true';
+
+      if (isSaved) {
+        btn.setAttribute('aria-pressed', 'false');
+        svg?.classList.remove('saved');
+        showNotification('Menghapus cerita...', 'info');
+        try {
+          await deleteSavedStory(id);
+          showNotification('Cerita dihapus dari tersimpan', 'success');
+        } catch (err) {
+          btn.setAttribute('aria-pressed', 'true');
+          svg?.classList.add('saved');
+          showNotification('Gagal menghapus cerita', 'error');
+        }
+        return;
+      }
+
+      btn.setAttribute('aria-pressed', 'true');
+      svg?.classList.add('saved');
+      showNotification('Menyimpan cerita...', 'info');
+      try {
+        await saveStory(story);
+        showNotification('Cerita disimpan', 'success');
+      } catch (err) {
+        btn.setAttribute('aria-pressed', 'false');
+        svg?.classList.remove('saved');
+        showNotification('Gagal menyimpan cerita', 'error');
+      }
+    };
+
+    listContainer.addEventListener('click', clickHandler);
+
+    listContainer.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      const btn = e.target.closest('.save-toggle');
+      if (btn) {
+        e.preventDefault();
+        btn.click();
+      }
+    });
   }
 
   _setupStoryCardHandlers() {
